@@ -14,6 +14,7 @@ Two datasets (DS) are used:
     - 1000 unique sudoku puzzles with varying difficulty levels
  * **DS 2:**
     * Obtained from https://github.com/Kyubyong/sudoku/blob/master/data/test.csv
+    * Stored in `unique_puzzles.txt` and `unique_solutions.txt` using python's Pickle format
     * 30 unique sudoku puzzles with distinct difficulty levels: 
       * Easy = 1-6
       * Medium = 7-12
@@ -22,4 +23,14 @@ Two datasets (DS) are used:
       * Evil = 25-30
       
 ## File Description
- * `data.py`: creates
+ * `data.py` returns one of the two data sets
+ * `sudoku_solver.py` contains the methods used to solve the sudoku puzzle
+ * `test.py` loads the data, solves each sudoku puzzle, and compares it against the known solution. **Run this file.**
+ 
+## Implimentation and Results
+The techniques used to solve, which are explained at [here](https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php), include: 
+
+ * Sole and Unique canidate
+ * Block and Column/Row Interaction 
+ 
+As the software is developed, more techniques will be implimented so that even the most difficult sudoku puzzles can be solved. **As of now, this software can correctly solve the entire first dataset and 17 out of 30 (=56%) puzzles in the second dataset.**
