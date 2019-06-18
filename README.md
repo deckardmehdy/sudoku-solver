@@ -4,6 +4,9 @@ Sudoku is a puzzle that requires you to fill in blank cells in a 9x9 grid so tha
 
 # Requirements
 • Python >= 3.0
+
 • NumPy >= 1.16.1
+
 • TimeIt >= 2.3
+
 • Pickle >= 4
