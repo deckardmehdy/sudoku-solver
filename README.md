@@ -14,8 +14,7 @@ Two datasets are used:
     - Generated using this [file](https://github.com/Kyubyong/sudoku/blob/master/generate_sudoku.py)
     - 1000 unique sudoku puzzles with varying difficulty levels
  * **DS 2:**
-    - Obtained from [here](https://github.com/Kyubyong/sudoku/blob/master/data/test.csv)
-    - 30 unique sudoku puzzles with distinct difficulty levels: 
-      > Easy = 1-6; 
-      > Medium = 7-12; 
-      > Hard = 13-18; expert = 19-24; and evil = 25-30.
+    * Obtained from [here](https://github.com/Kyubyong/sudoku/blob/master/data/test.csv)
+    * 30 unique sudoku puzzles with distinct difficulty levels: 
+      * Easy = 1-6; 
+      > Medium = 7-12; Hard = 13-18; Expert = 19-24; Evil = 25-30.
