@@ -1,3 +1,3 @@
 # Sudoku Puzzle Solver
 
-kamsdkmasd
+Sudoku is a puzzle that requires you to fill in blank cells in a 9x9 grid so that each column, row, and 3x3 subgrid contains all of the digits from 1 to 9. As of now, there are various ways to solve a sudoku puzzle. This project uses rule-based elimination and inference techniques to solve a given puzzle. Over time, more techniques will be implimented so that all sudoku puzzles -- regardless of their difficulty -- can be solved.
