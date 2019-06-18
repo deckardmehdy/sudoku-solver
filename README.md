@@ -10,9 +10,12 @@ Sudoku is a puzzle that requires you to fill in blank cells in a 9x9 grid so tha
   
 ## Dataset
 Two datasets are used:
- * DS 1 
+ * **DS 1:** 
     - Generated using this [file](https://github.com/Kyubyong/sudoku/blob/master/generate_sudoku.py)
     - 1000 unique sudoku puzzles with varying difficulty levels
- * DS 2:
+ * **DS 2:**
     - Obtained from [here](https://github.com/Kyubyong/sudoku/blob/master/data/test.csv)
-    - 30 unique sudoku puzzles with distinct difficulty levels: easy = 1-6; medium = 7-12; hard = 13-18; expert = 19-24; and evil = 25-30.
+    - 30 unique sudoku puzzles with distinct difficulty levels: 
+      > Easy = 1-6; 
+      > Medium = 7-12; 
+      > Hard = 13-18; expert = 19-24; and evil = 25-30.
