@@ -6,4 +6,18 @@ Sudoku is a puzzle that requires you to fill in blank cells in a 9x9 grid so tha
   * Python >= 3.0
   * NumPy >= 1.16.1
   * TimeIt >= 2.3 
-  * Pickle >= 4
+  * Pickle >= 4.0
+  
+## Dataset
+Two datasets are used:
+ * DS 1 
+    - Generated using this [file](https://github.com/Kyubyong/sudoku/blob/master/generate_sudoku.py)
+    - 1000 unique sudoku puzzles with varying difficulty levels
+ * DS 2:
+    - Obtained from [here](https://github.com/Kyubyong/sudoku/blob/master/data/test.csv)
+    - 30 unique sudoku puzzles with distinct difficulty levels:
+       ~ Easy = 1-6
+       ~ Medium = 7-12
+       ~ Hard = 13-18
+       ~ Expert = 19-24
+       ~ Evil = 25-30
