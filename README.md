@@ -16,5 +16,8 @@ Two datasets are used:
  * **DS 2:**
     * Obtained from [here](https://github.com/Kyubyong/sudoku/blob/master/data/test.csv)
     * 30 unique sudoku puzzles with distinct difficulty levels: 
-      * Easy = 1-6; 
-      > Medium = 7-12; Hard = 13-18; Expert = 19-24; Evil = 25-30.
+      * Easy = 1-6
+      * Medium = 7-12
+      * Hard = 13-18
+      * Expert = 19-24
+      * Evil = 25-30
