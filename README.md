@@ -14,7 +14,7 @@ Two datasets (DS) are used:
     - 1000 unique puzzles and solutions 
  * **DS 2:**
     * Obtained from https://github.com/Kyubyong/sudoku/blob/master/data/test.csv
-    * Stored in `unique_puzzles.txt` and `unique_solutions.txt` using python's Pickle format
+    * Stored in `unique_puzzles.txt` and `unique_solutions.txt` using Python's Pickle format
     * 30 unique sudoku puzzles and solutions with distinct difficulty levels: 
       * Easy = 1-6
       * Medium = 7-12
