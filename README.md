@@ -28,7 +28,7 @@ Two datasets (DS) are used:
  * `test.py` loads the data, solves each sudoku puzzle, and compares it against the known solution. **Run this file.**
  
 ## Implimentation and Results
-The techniques used to solve a given puzzle, which are explained at [here](https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php), include: 
+The techniques implimented to solve a given puzzle, which are explained at [here](https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php), include: 
 
  * Sole and Unique Canidate
  * Block and Column/Row Interaction 
