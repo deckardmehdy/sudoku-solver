@@ -4,12 +4,13 @@
     This file solves a 9x9 sudoku puzzle. Sudoku is a puzzle that requires you to fill in blank cells in a 9x9 grid so that each column, row, and 3x3 subgrid contains all of the digits from 1 to 9.
     The techniques used to solve, which are explained at [https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php], include:
         - Sole and Unique Canidate
-        - Block and column/row interaction
+        - Block and Column/Row Interaction
+        - Naked Subset
 """
 
 import numpy as np
 
-# Impliments the unique canidate method:
+# Impliments the 'Unique Canidate' method:
 def checkNotes(notes):
     cellsToFill = []
     start, end = [0,3,6], [3,6,9]
@@ -95,6 +96,30 @@ def createNotes(puzzle):
                 eraseCellNotes(row,col,notes)
     return notes
 
+def eraseCanidatesInCol(nums,col,rows_to_exclude,notes):
+    for num in nums:
+        for row in range(9):
+            if row not in rows_to_exclude:
+                notes[num,row,col] = 0
+    return
+
+def eraseCanidatesInRow(nums,row,cols_to_exclude,notes):
+    for num in nums:
+        for col in range(9):
+            if col not in cols_to_exclude:
+                notes[num,row,col] = 0
+    return
+
+def eraseCanidatesInSubGrid(nums,subGridBounds,cells_to_exclude,notes):
+    [rowStart,rowEnd,colStart,colEnd] = subGridBounds
+    for num in nums:
+        for row in range(rowStart,rowEnd):
+            for col in range(colStart,colEnd):
+                cell = [row,col]
+                if cell not in cells_to_exclude:
+                    notes[num,row,col] = 0
+    return
+
 def eraseCellNotes(row,col,notes):
     notes[:,row,col] = 0
     return
@@ -110,7 +135,22 @@ def eraseRowAndColNotes(row,col,notes,puzzle):
     notes[num,:,col], notes[num,row,:] = 0, 0
     return
 
-# Impliments the block and column/row interaction method:
+def findSubsets(notes,subset_size):
+    totalNotes = np.sum(notes,axis=0,dtype=int)
+    subsets_in_notes = [[],[],[],[],[],[],[],[],[]]
+    for row in range(9):
+        for col in range(9):
+            if totalNotes[row][col] == subset_size:
+                subset = []
+                for num in range(9):
+                    if notes[num,row,col] == 1:
+                        subset.append(num)
+                subsets_in_notes[row].append(subset)
+            else:
+                subsets_in_notes[row].append([])
+    return subsets_in_notes
+
+# Impliments the 'Block and Column/Row Interaction' method:
 def inference(notes):
     start, end = [0,3,6], [3,6,9]
     for row in range(3):
@@ -138,14 +178,43 @@ def inference(notes):
                 clearOtherSubGridCols(start[row],end[row],col_with_notes,notes)
     return
 
+# Impliments the 'Naked Subset' method for subsets of length 2:
+def nakedSubset(notes,puzzle):
+    subsets_in_notes = findSubsets(notes,subset_size=2)
+    for row in range(9):
+        for col in range(9):
+            if len(subsets_in_notes[row][col]) > 0:
+                subset = subsets_in_notes[row][col]
+                
+                for c in range(9):
+                    another_subset = subsets_in_notes[row][c]
+                    if c != col and subset == another_subset:
+                        eraseCanidatesInRow(subset,row,[col,c],notes)
+            
+                for r in range(9):
+                    another_subset = subsets_in_notes[r][col]
+                    if r != row and subset == another_subset:
+                        eraseCanidatesInCol(subset,col,[row,r],notes)
+    
+                [rowStart,rowEnd,colStart,colEnd] = subGridBoundaries(row,col)
+                for r in range(rowStart,rowEnd):
+                    for c in range(colStart,colEnd):
+                        if r != row or c != col:
+                            another_subset = subsets_in_notes[r][c]
+                            if subset == another_subset:
+                                eraseCanidatesInSubGrid(subset,[rowStart,rowEnd,colStart,colEnd],[[row,col],[r,c]],notes)
+    return
+
 def solve(puzzle,maxIter):
     notes = createNotes(puzzle)
     [emptyCells,totalEmptyCells] = countEmptyCells(puzzle)
     iter = 0
     while totalEmptyCells > 0 and iter < maxIter:
+        cellsFilled = 0
         for num in range(9):
             if emptyCells[num] > 0:
                 cellsToFill = checkNotes(notes[num][:][:])
+                cellsFilled += len(cellsToFill)
                 for cell in cellsToFill:
                     [row,col] = cell
                     puzzle[row][col] = num + 1
@@ -164,6 +233,7 @@ def solve(puzzle,maxIter):
                 if totalNotes[row][col] == 1:
                     cellsToFill.append([row,col])
         if len(cellsToFill) > 0:
+            cellsFilled += len(cellsToFill)
             for cell in cellsToFill:
                 [row,col] = cell
                 for num in range(9):
@@ -175,6 +245,12 @@ def solve(puzzle,maxIter):
                 eraseCellNotes(row,col,notes)
                 emptyCells[numToFill] -= 1
                 totalEmptyCells -= 1
+    
+#       Use the Naked Subset method if no cells were filled during this iteration:
+        if cellsFilled == 0:
+            nakedSubset(notes,puzzle)
+            nakedSubset_switch = False
+        
         iter += 1
     return puzzle,notes
 
