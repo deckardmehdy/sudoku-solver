@@ -178,31 +178,42 @@ def inference(notes):
                 clearOtherSubGridCols(start[row],end[row],col_with_notes,notes)
     return
 
-# Impliments the 'Naked Subset' method for subsets of length 2:
+# Impliments the 'Naked Subset' method:
 def nakedSubset(notes,puzzle):
-    subsets_in_notes = findSubsets(notes,subset_size=2)
-    for row in range(9):
-        for col in range(9):
-            if len(subsets_in_notes[row][col]) > 0:
-                subset = subsets_in_notes[row][col]
+    max_subset_length = 3       # 2 <= max_subset_length <= 9 (2 or 3 are recommended)
+    for subset_size in range(2,(max_subset_length+1)):
+        subsets_in_notes = findSubsets(notes,subset_size)
+        for row in range(9):
+            for col in range(9):
+                if len(subsets_in_notes[row][col]) > 0:
+                    subset = subsets_in_notes[row][col]
+                    
+                    cols_containing_same_subset = [col]
+                    for c in range(9):
+                        another_subset = subsets_in_notes[row][c]
+                        if c != col and subset == another_subset:
+                            cols_containing_same_subset.append(c)
+                    if len(cols_containing_same_subset) == subset_size:
+                        eraseCanidatesInRow(subset,row,cols_containing_same_subset,notes)
                 
-                for c in range(9):
-                    another_subset = subsets_in_notes[row][c]
-                    if c != col and subset == another_subset:
-                        eraseCanidatesInRow(subset,row,[col,c],notes)
-            
-                for r in range(9):
-                    another_subset = subsets_in_notes[r][col]
-                    if r != row and subset == another_subset:
-                        eraseCanidatesInCol(subset,col,[row,r],notes)
-    
-                [rowStart,rowEnd,colStart,colEnd] = subGridBoundaries(row,col)
-                for r in range(rowStart,rowEnd):
-                    for c in range(colStart,colEnd):
-                        if r != row or c != col:
-                            another_subset = subsets_in_notes[r][c]
-                            if subset == another_subset:
-                                eraseCanidatesInSubGrid(subset,[rowStart,rowEnd,colStart,colEnd],[[row,col],[r,c]],notes)
+                    rows_containing_same_subset = [row]
+                    for r in range(9):
+                        another_subset = subsets_in_notes[r][col]
+                        if r != row and subset == another_subset:
+                            rows_containing_same_subset.append(r)
+                    if len(rows_containing_same_subset) == subset_size:
+                        eraseCanidatesInCol(subset,col,rows_containing_same_subset,notes)
+        
+                    [rowStart,rowEnd,colStart,colEnd] = subGridBoundaries(row,col)
+                    cells_containing_same_subset = [[row,col]]
+                    for r in range(rowStart,rowEnd):
+                        for c in range(colStart,colEnd):
+                            if r != row or c != col:
+                                another_subset = subsets_in_notes[r][c]
+                                if subset == another_subset:
+                                    cells_containing_same_subset.append([r,c])
+                    if len(cells_containing_same_subset) == subset_size:
+                        eraseCanidatesInSubGrid(subset,[rowStart,rowEnd,colStart,colEnd],cells_containing_same_subset,notes)
     return
 
 def solve(puzzle,maxIter):
@@ -249,7 +260,6 @@ def solve(puzzle,maxIter):
 #       Use the Naked Subset method if no cells were filled during this iteration:
         if cellsFilled == 0:
             nakedSubset(notes,puzzle)
-            nakedSubset_switch = False
         
         iter += 1
     return puzzle,notes
