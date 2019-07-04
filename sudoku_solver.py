@@ -6,6 +6,7 @@
         - Sole and Unique Canidate
         - Block and Column/Row Interaction
         - Naked Subset
+        - X-Wing
 """
 
 import numpy as np
@@ -257,9 +258,10 @@ def solve(puzzle,maxIter):
                 emptyCells[numToFill] -= 1
                 totalEmptyCells -= 1
     
-#       Use the Naked Subset method if no cells were filled during this iteration:
+#       Use the 'Naked Subset' and 'X-Wing' methods if no cells were filled during this iteration:
         if cellsFilled == 0:
             nakedSubset(notes,puzzle)
+            xwing(emptyCells,notes,puzzle)
         
         iter += 1
     return puzzle,notes
@@ -280,3 +282,45 @@ def subGridBoundaries(row,col):
         colStart, colEnd  = 3, 6
 
     return [rowStart,rowEnd,colStart,colEnd]
+
+# Impliments the 'X-Wing' method:
+def xwing(emptyCells,notes,puzzle):
+    for num in range(9):
+        if emptyCells[num] > 0:
+            colSums = np.sum(notes[num,:,:],axis=0,dtype=int)
+            rowSums = np.sum(notes[num,:,:],axis=1,dtype=int)
+            cols_to_check, rows_to_check = [],[]
+            for i in range(9):
+                if colSums[i] == 2:
+                    cols_to_check.append(i)
+                if rowSums[i] == 2:
+                    rows_to_check.append(i)
+        
+            if len(cols_to_check) > 1:
+                rows_containing_notes = []
+                for col in cols_to_check:
+                    rows = []
+                    for row in range(9):
+                        if notes[num,row,col] == 1:
+                            rows.append(row)
+                    rows_containing_notes.append(rows)
+                for i in range(len(cols_to_check)-1):
+                    for j in range((i+1),len(cols_to_check)):
+                        if rows_containing_notes[i] == rows_containing_notes[j]:
+                            for row in rows_containing_notes[i]:
+                                eraseCanidatesInRow([num],row,cols_to_check,notes)
+
+            if len(rows_to_check) > 1:
+                cols_containing_notes = []
+                for row in rows_to_check:
+                    cols = []
+                    for col in range(9):
+                        if notes[num][row][col] == 1:
+                            cols.append(col)
+                    cols_containing_notes.append(cols)
+                for i in range(len(rows_to_check)-1):
+                    for j in range((i+1),len(rows_to_check)):
+                        if cols_containing_notes[i] == cols_containing_notes[j]:
+                            for col in cols_containing_notes[i]:
+                                eraseCanidatesInCol([num],col,rows_to_check,notes)
+    return
