@@ -33,5 +33,6 @@ The techniques implimented to solve a given puzzle, which are explained at [here
  * Sole and Unique Canidate
  * Block and Column/Row Interaction 
  * Naked Subset
+ * X-Wing
  
-As the software is developed, more techniques will be implimented so that even the most difficult sudoku puzzles can be solved. **As of now, this software can correctly solve the entire first dataset and 20 out of 30 (=66%) puzzles in the second dataset.**
+As the software is developed, more techniques will be implimented so that even the most difficult sudoku puzzles can be solved. **As of now, this software can correctly solve the entire first dataset and 21 out of 30 (=70%) puzzles in the second dataset.**
