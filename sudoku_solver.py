@@ -112,6 +112,48 @@ def eraseCanidatesInRow(nums,row,cols_to_exclude,notes):
                 notes[num,row,col] = 0
     return
 
+def eraseCanidatesInOtherSubGridRows(notes,rows,subgrids_to_exclude):
+    subgrid_one, subgrid_two = subgrids_to_exclude
+    if subgrid_one[1] == 0:
+        if subgrid_two[1] == 1:
+            colStart,colEnd = 6, 9
+        else:
+            colStart,colEnd = 3, 6
+    elif subgrid_one[1] == 1:
+        if subgrid_two[1] == 0:
+            colStart,colEnd = 6, 9
+        else:
+            colStart,colEnd = 0, 3
+    else:
+        if subgrid_two[1] == 0:
+            colStart,colEnd = 3, 6
+        else:
+            colStart,colEnd = 0, 3
+    for row in rows:
+        notes[row,colStart:colEnd] = 0
+    return
+
+def eraseCanidatesInOtherSubGridCols(notes,cols,subgrids_to_exclude):
+    subgrid_one, subgrid_two = subgrids_to_exclude
+    if subgrid_one[0] == 0:
+        if subgrid_two[0] == 1:
+            rowStart,rowEnd = 6, 9
+        else:
+            rowStart,rowEnd = 3, 6
+    elif subgrid_one[0] == 1:
+        if subgrid_two[0] == 0:
+            rowStart,rowEnd = 6, 9
+        else:
+            rowStart,rowEnd = 0, 3
+    else:
+        if subgrid_two[0] == 0:
+            rowStart,rowEnd = 3, 6
+        else:
+            rowStart,rowEnd = 0, 3
+    for col in cols:
+        notes[rowStart:rowEnd,col] = 0
+    return
+
 def eraseCanidatesInSubGrid(nums,subGridBounds,cells_to_exclude,notes):
     [rowStart,rowEnd,colStart,colEnd] = subGridBounds
     for num in nums:
