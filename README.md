@@ -32,6 +32,7 @@ The techniques implimented to solve a given puzzle, which are explained at [here
 
  * Sole and Unique Canidate
  * Block and Column/Row Interaction 
+ * Block and Block Interaction
  * Naked Subset
  * X-Wing
  
