@@ -5,7 +5,6 @@
     The techniques used to solve, which are explained at [https://www.kristanix.com/sudokuepic/sudoku-solving-techniques.php], include:
         - Sole and Unique Canidate
         - Block and Column/Row Interaction
-        - Block and Block Interaction
         - Naked Subset
         - X-Wing
 """
