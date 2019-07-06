@@ -151,8 +151,8 @@ def findSubsets(notes,subset_size):
                 subsets_in_notes[row].append([])
     return subsets_in_notes
 
-# Impliments the 'Block and Column/Row Interaction' method:
 def inference(notes):
+    # Impliments the 'Block and Column/Row Interaction' method:
     start, end = [0,3,6], [3,6,9]
     for row in range(3):
         for col in range(3):
@@ -177,6 +177,52 @@ def inference(notes):
                     col_with_notes = start[col] + j
             if cols_with_no_notes == 2:
                 clearOtherSubGridCols(start[row],end[row],col_with_notes,notes)
+                
+    # Impliments the 'Block and Block Interaction' method:
+    subgrids = [[{},{},{}],[{},{},{}],[{},{},{}]]
+    for i in range(3):
+        for j in range(3):
+            subgrid = subgrids[i][j]
+            subgrid["nonzero_rows"] = False
+            subgrid["nonzero_cols"] = False
+    for row in range(3):
+        for col in range(3):
+            subGrid = notes[start[row]:end[row],start[col]:end[col]]
+            
+            rowSums = np.sum(subGrid,axis=1,dtype=int)
+            rows_with_notes = []
+            for i in range(3):
+                if rowSums[i] > 0:
+                    rows_with_notes.append(start[row] + i)
+            if len(rows_with_notes) == 2:
+                subgrid_storage = subgrids[row][col]
+                subgrid_storage["nonzero_rows"] = rows_with_notes
+
+            colSums = np.sum(subGrid,axis=0,dtype=int)
+            cols_with_notes = []
+            for j in range(3):
+                if colSums[j] > 0:
+                    cols_with_notes.append(start[col] + j)
+            if len(cols_with_notes) == 2:
+                subgrid_storage = subgrids[row][col]
+                subgrid_storage["nonzero_cols"] = cols_with_notes
+    for row in range(3):
+        for col in range(3):
+            subgrid = subgrids[row][col]
+            if subgrid["nonzero_rows"] != False:
+                for c in range(3):
+                    if c != col:
+                        another_subgrid = subgrids[row][c]
+                        if subgrid["nonzero_rows"] == another_subgrid["nonzero_rows"]:
+                            eraseCanidatesInOtherSubGridRows(notes,subgrid["nonzero_rows"],[[row,col],[row,c]])
+                            another_subgrid["nonzero_rows"] = False
+            if subgrid["nonzero_cols"] != False:
+                for r in range(3):
+                    if r != row:
+                        another_subgrid = subgrids[r][col]
+                        if subgrid["nonzero_cols"] == another_subgrid["nonzero_cols"]:
+                            eraseCanidatesInOtherSubGridCols(notes,subgrid["nonzero_cols"],[[r,col],[row,col]])
+                            another_subgrid["nonzero_cols"] = False
     return
 
 # Impliments the 'Naked Subset' method:
