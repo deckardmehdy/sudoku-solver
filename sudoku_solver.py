@@ -12,6 +12,7 @@
 """
 
 import numpy as np
+from itertools import combinations
 
 # Impliments the 'Unique Canidate' method:
 def checkNotes(notes):
