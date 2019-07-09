@@ -7,6 +7,7 @@
         - Block and Column/Row Interaction
         - Block and Block Interaction
         - Naked Subset
+        - Hidden Subset
         - X-Wing
 """
 
@@ -194,6 +195,91 @@ def findSubsets(notes,subset_size):
                 subsets_in_notes[row].append([])
     return subsets_in_notes
 
+# Impliments the 'Hidden Subset' method
+def hiddenSubset(notes,puzzle):
+    max_subset_length = 2       # 2 <= max_subset_length <= 9 (2 or 3 are recommended)
+    start, end = [0,3,6], [3,6,9]
+    for subset_length in range(2,(max_subset_length+1)):
+        subgrids, rows, cols = hiddenSubsetHelper(notes,puzzle)
+        for subgrid_row in range(3):
+            for subgrid_col in range(3):
+                for row in range(start[subgrid_row],end[subgrid_row]):
+                    for col in range(start[subgrid_col],end[subgrid_col]):
+                        if puzzle[row][col] == 0:
+                            for num in range(9):
+                                if notes[num,row,col] == 1:
+                                    subgrids[str(subgrid_row)+"-"+str(subgrid_col)].setdefault(str(num),[]).append([row,col])
+                                    rows[str(row)].setdefault(str(num),[]).append(col)
+                                    cols[str(col)].setdefault(str(num),[]).append(row)
+
+        for row in range(9):
+            row_to_investigate = rows[str(row)]
+            potential_subsets = []
+            for num in range(9):
+                if len(row_to_investigate.get(str(num),[])) == subset_length:
+                    potential_subsets.append(num)
+            if len(potential_subsets) >= subset_length:
+                combos = combinations(potential_subsets,subset_length)
+                for potential_subset in combos:
+                    match = True
+                    for j in range(1,subset_length):
+                        num, another_num = potential_subset[j-1], potential_subset[j]
+                        if row_to_investigate[str(num)] != row_to_investigate[str(another_num)]:
+                            match = False
+                    if match == True:
+                        for col in row_to_investigate[str(potential_subset[0])]:
+                            partiallyEraseCellNotes(row,col,potential_subset,notes)
+
+        
+        for col in range(9):
+            col_to_investigate = cols[str(col)]
+            potential_subsets = []
+            for num in range(9):
+                if len(col_to_investigate.get(str(num),[])) == subset_length:
+                    potential_subsets.append(num)
+            if len(potential_subsets) >= subset_length:
+                combos = combinations(potential_subsets,subset_length)
+                for potential_subset in combos:
+                    match = True
+                    for j in range(1,subset_length):
+                        num, another_num = potential_subset[j-1], potential_subset[j]
+                        if col_to_investigate[str(num)] != col_to_investigate[str(another_num)]:
+                            match = False
+                    if match == True:
+                        for row in col_to_investigate[str(potential_subset[0])]:
+                            partiallyEraseCellNotes(row,col,potential_subset,notes)
+
+        for subgrid_row in range(3):
+            for subgrid_col in range(3):
+                subgrid_to_investigate = subgrids[str(subgrid_row)+"-"+str(subgrid_col)]
+                potential_subsets = []
+                for num in range(9):
+                    if len(subgrid_to_investigate.get(str(num),[])) == subset_length:
+                        potential_subsets.append(num)
+                if len(potential_subsets) >= subset_length:
+                    combos = combinations(potential_subsets,subset_length)
+                    for potential_subset in combos:
+                        match = True
+                        for j in range(1,subset_length):
+                            num, another_num = potential_subset[j-1], potential_subset[j]
+                            if subgrid_to_investigate[str(num)] != subgrid_to_investigate[str(another_num)]:
+                                match = False
+                        if match == True:
+                            for cell in subgrid_to_investigate[str(potential_subset[0])]:
+                                [row,col] = cell
+                                partiallyEraseCellNotes(row,col,potential_subset,notes)
+    return
+
+def hiddenSubsetHelper(notes,puzzle):
+    subgrids, rows, cols = {}, {}, {}
+    for subgrid_row in range(3):
+        for subgrid_col in range(3):
+            subgrids[str(subgrid_row)+"-"+str(subgrid_col)] = {}
+    for i in range(9):
+        rows[str(i)] = {}
+        cols[str(i)] = {}
+    return subgrids, rows, cols
+
 def inference(notes):
     # Impliments the 'Block and Column/Row Interaction' method:
     start, end = [0,3,6], [3,6,9]
@@ -306,6 +392,13 @@ def nakedSubset(notes,puzzle):
                         eraseCanidatesInSubGrid(subset,[rowStart,rowEnd,colStart,colEnd],cells_containing_same_subset,notes)
     return
 
+def partiallyEraseCellNotes(row,col,nums_to_keep,notes):
+    for num in range(9):
+        if num not in nums_to_keep:
+            notes[num,row,col] = 0
+    return
+
+# MAIN METHOD #
 def solve(puzzle,maxIter):
     notes = createNotes(puzzle)
     [emptyCells,totalEmptyCells] = countEmptyCells(puzzle)
@@ -351,6 +444,7 @@ def solve(puzzle,maxIter):
         if cellsFilled == 0:
             nakedSubset(notes,puzzle)
             xwing(emptyCells,notes,puzzle)
+            hiddenSubset(notes,puzzle)
         
         iter += 1
     return puzzle,notes
